@@ -1,0 +1,22 @@
+{
+  "__default__": {
+    "cluster" : "qsub",
+    "nodes": 1,
+    "ppn": 1
+  },
+  "fastp": {
+    "ppn": 32
+  },
+  "bowtie2_alignment": {
+    "ppn": 32
+  },
+  "sort_and_index": {
+    "ppn": 32
+  },
+  "lofreq": {
+    "ppn": 32
+  },
+  "quasirecomb": {
+    "ppn": 32
+  }
+}
