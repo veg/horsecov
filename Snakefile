@@ -41,16 +41,22 @@ rule downsample:
     keeping_index = 0
     fastq_handle = open(output.reads, 'w')
     for read_index, read in enumerate(reads):
-      if read_index == indices_to_keep[keeping_index]:
-        keeping_index += 1
-        SeqIO.write(read, fastq_handle, 'fastq')
+      try:
+        if read_index == indices_to_keep[keeping_index]:
+          keeping_index += 1
+          SeqIO.write(read, fastq_handle, 'fastq')
+      except IndexError:
+        print('pesky index error', keeping_index, len(indices_to_keep))
 
     keeping_index = 0
     fastq_handle = open(output.mates, 'w')
     for mate_index, mate in enumerate(mates):
-      if mate_index == indices_to_keep[keeping_index]:
-        keeping_index += 1
-        SeqIO.write(mate, fastq_handle, 'fastq')
+      try:
+        if mate_index == indices_to_keep[keeping_index]:
+          keeping_index += 1
+          SeqIO.write(mate, fastq_handle, 'fastq')
+      except IndexError:
+        print('pesky index error', keeping_index, len(indices_to_keep))
 
 rule fastp:
   input:
