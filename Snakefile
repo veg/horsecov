@@ -1,5 +1,3 @@
-import itertools as it
-
 import numpy as np
 from Bio import SeqIO
 
@@ -28,26 +26,28 @@ rule downsample:
   run:
     reads = SeqIO.parse(input.reads, 'fastq')
     mates = SeqIO.parse(input.mates, 'fastq')
-    reads_1, reads_2 = it.tee(reads, 2) 
-    mates_1, mates_2 = it.tee(mates, 2) 
     total_all_reads = 0
-    for read, mate in zip(reads_1, mates_1):
+    for read, mate in zip(reads, mates):
       assert read.name == mate.name, "Aborting due to mismatch in mate pairs"
       total_all_reads += 1
+    print('Reads/mates are harmonized, proceeding to downsample')
+
+    reads = SeqIO.parse(input.reads, 'fastq')
+    mates = SeqIO.parse(input.mates, 'fastq')
     total_kept_reads = np.ceil(DOWNSAMPLE*total_all_reads)
-    indices_to_keep = np.random.choice(n_reads, size=total_kept_reads, replace=False)
+    indices_to_keep = np.random.choice(total_all_reads, size=total_kept_reads, replace=False)
     indices_to_keep.sort()
 
     keeping_index = 0
     fastq_handle = open(output.reads, 'w')
-    for read_index, read in enumerate(reads_2):
+    for read_index, read in enumerate(reads):
       if read_index == indices_to_keep[keeping_index]:
         keeping_index += 1
         SeqIO.write(read, fastq_handle, 'fastq')
 
     keeping_index = 0
     fastq_handle = open(output.mates, 'w')
-    for mate_index, mate in enumerate(mates_2):
+    for mate_index, mate in enumerate(mates):
       if mate_index == indices_to_keep[keeping_index]:
         keeping_index += 1
         SeqIO.write(mate, fastq_handle, 'fastq')
