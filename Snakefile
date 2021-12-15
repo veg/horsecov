@@ -34,7 +34,7 @@ rule downsample:
 
     reads = SeqIO.parse(input.reads, 'fastq')
     mates = SeqIO.parse(input.mates, 'fastq')
-    total_kept_reads = np.ceil(DOWNSAMPLE*total_all_reads)
+    total_kept_reads = np.ceil(DOWNSAMPLE*total_all_reads).astype(int)
     indices_to_keep = np.random.choice(total_all_reads, size=total_kept_reads, replace=False)
     indices_to_keep.sort()
 
