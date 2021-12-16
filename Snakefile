@@ -96,10 +96,12 @@ rule bowtie2_alignment:
     rules.bowtie2_index.output,
     reads=rules.fastp.output.reads,
     mates=rules.fastp.output.mates
+  params:
+    index=lambda w:'output/%s/%s' % (w.reference, w.reference)
   output:
     temp("output/{run}/{reference}/mapped.sam")
   shell:
-    "bowtie2 -x {wildcards.reference}/{wildcards.reference} -1 {input.reads} -2 {input.mates} -S {output} -p %d" % THREADS
+    "bowtie2 -x {params.index} -1 {input.reads} -2 {input.mates} -S {output} -p %d" % THREADS
 
 rule sort_and_index:
   input:
