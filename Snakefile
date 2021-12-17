@@ -7,7 +7,7 @@ FASTQ_IDS = [
   "LG1-016252-18horse", "LG2-053057-19horse",
   "LG3-012998-20horse", "LG5-002173-18horse"
 ]
-DOWNSAMPLE = .2
+DOWNSAMPLE = .05
 
 
 rule all:
@@ -15,6 +15,11 @@ rule all:
     expand("output/{run}/{reference}/quasirecomb/quasispecies.fasta", run=FASTQ_IDS, reference=['spike']),
     expand("output/{run}/{reference}/variants.vcf", run=FASTQ_IDS, reference=['spike']),
     expand("output/{run}/{reference}/qualimapReport.html", run=FASTQ_IDS, reference=['spike'])
+
+rule all_downsampled:
+  input:
+    expand("output/{run}/reads_1.fastq", run=FASTQ_IDS, reference=['spike']),
+    expand("output/{run}/reads_2.fastq", run=FASTQ_IDS, reference=['spike'])
 
 rule downsample:
   input:
@@ -78,7 +83,7 @@ rule bowtie2_index:
     revbt1="output/{reference}/{reference}.rev.1.bt2",
     revbt2="output/{reference}/{reference}.rev.2.bt2"
   shell:
-    "bowtie2-build {input} {wildcards.reference}/{wildcards.reference}"
+    "bowtie2-build {input} output/{wildcards.reference}/{wildcards.reference}"
 
 rule reference_index:
   input:
