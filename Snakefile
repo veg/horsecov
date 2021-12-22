@@ -137,14 +137,21 @@ rule lofreq:
   shell:
     "lofreq call-parallel -f {input.reference} -o {output} --pp-threads %d {input.bam}" % THREADS
 
+rule quasirecomb_jar:
+  output:
+    "QuasiRecomb.jar"
+  shell:
+    "wget https://github.com/cbg-ethz/QuasiRecomb/releases/download/v1.2/QuasiRecomb.jar"
+
 rule quasirecomb:
   input:
-    rules.sort_and_index.output.bam
+    bam=rules.sort_and_index.output.bam,
+    jar=rules.quasirecomb_jar.output[0]
   output:
     "output/{run}/{reference}/quasirecomb/quasispecies.fasta"
   params:
-    basedir="{run}/{reference}/quasirecomb"
+    basedir="output/{run}/{reference}/quasirecomb"
   shell:
     """
-      quasirecomb -conservative -o {params.basedir} -i {input}
-    """ 
+      java -jar QuasiRecomb.jar -conservative -o {params.basedir} -i {input.bam}
+    """
