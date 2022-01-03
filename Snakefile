@@ -141,7 +141,7 @@ rule quasirecomb_jar:
   output:
     "QuasiRecomb.jar"
   shell:
-    "wget https://github.com/cbg-ethz/QuasiRecomb/releases/download/v1.2/QuasiRecomb.jar"
+    "wget --no-check-certificate https://github.com/cbg-ethz/QuasiRecomb/releases/download/v1.2/QuasiRecomb.jar"
 
 rule quasirecomb:
   input:
